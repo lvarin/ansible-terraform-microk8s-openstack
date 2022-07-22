@@ -15,29 +15,6 @@ This is an example on how to deploy a microk8s cluster in an OpenStack instance 
 
 * Edit `terraform/variables.tf` with the correct values for the name of **keypair** (`openstack keypair list`), **network** (`openstack network list`) and **security_groups** (`openstack security group list`).
 
-### Terraform
-
-Run terraform. First `init`, then `plan`, finally `apply`.
-
 ```sh
-terraform -chdir=terraform init
+ansible-playbook site.yaml
 ```
-
-```sh
-terraform -chdir=terraform plan -out=Test
-```
-
-```sh
-terraform -chdir=terraform apply "Test"
-```
-
-After this step. You will have the host(s) ready and created. A list of the hosts will be in the inventory.
-
-### Ansible
-
-Run ansible to instal the software in the host(s) created in the previous step.
-
-```sh
-ansible-playbook main.yaml
-```
-
