@@ -1,0 +1,20 @@
+---
+- name: Make sure snapd is installed
+  become: yes
+  package:
+    name: snapd
+    state: present
+
+- name: Enable Snapd
+  become: yes
+  ansible.builtin.systemd:
+    name: snapd.socket
+    state: started
+    enabled: yes
+
+- name: Create snapd symlink
+  become: yes
+  file:
+    src: /var/lib/snapd/snap
+    dest: /snap
+    state: link
