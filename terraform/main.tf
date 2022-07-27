@@ -79,7 +79,7 @@ resource "openstack_compute_floatingip_associate_v2" "fip1" {
 output "inventory" {
   value = concat(
       [ {
-        "groups"           : "['jump_hosts']",
+        "groups"           : "['master']",
         "name"             : "${openstack_compute_instance_v2.master.name}",
         "ip"               : "${openstack_networking_floatingip_v2.fip1.address}",
         "ansible_ssh_user" : "${var.ssh_user}",
@@ -88,7 +88,7 @@ output "inventory" {
       } ],
       [ for key, item in openstack_compute_instance_v2.server : 
         {
-        "groups"           : "['target_hosts']",
+        "groups"           : "['compute']",
         "name"             : item.name,
         "ip"               : item.network.0.fixed_ip_v4,
         "ansible_ssh_user" : "${var.ssh_user}",

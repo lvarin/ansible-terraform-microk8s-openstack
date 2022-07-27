@@ -76,11 +76,11 @@
     dest: /etc/hosts
     marker: "# {mark} ANSIBLE MANAGED: microk8s HA Cluster Hosts"
     content: |
-      {% for host in groups['jump_hosts'] %}
+      {% for host in groups['master'] %}
       {{ hostvars[host].ansible_default_ipv4.address }} {{ hostvars[host].ansible_hostname }} {{ hostvars[host].ansible_hostname }}.novalocal
       {% endfor %}
       {% if 'taget_hosts' in groups %}
-      {% for host in groups['target_hosts'] %}
+      {% for host in groups['compute'] %}
       {{ hostvars[host].ansible_default_ipv4.address }} {{ hostvars[host].ansible_hostname }} {{ hostvars[host].inventory_hostname }}.nocalocal
       {% endfor %}
       {% endif %}
