@@ -85,19 +85,36 @@
       {% endfor %}
       {% endif %}
 
-# TODO We will make this configurable later
-- name: Enabling addons Ingress, Rbac, Storage, Dashboard
-  become: true
-  command: /snap/bin/microk8s.enable ingress rbac storage dashboard helm
-  register: output_microk8s_enable_1
-  until: output_microk8s_enable_1 is not failed
-  retries: 3
+- name: get current addons state
+  command:
+    cmd: microk8s.status --format yaml
+  changed_when: no
+  register: microk8s_status
 
-# TODO, from up
-- name: Enable MicroK8s dns
-  become: true
-  command: /snap/bin/microk8s.enable dns
-  register: output_microk8s_enable_2
-  until: output_microk8s_enable_2 is not failed
-  retries: 3
+- name: set current state fact
+  set_fact:
+    microk8s_status: "{{ microk8s_status.stdout | from_yaml }}"
 
+- name: enable addons
+  become: yes
+  loop: "{{ microk8s_status.addons }}"
+  loop_control:
+    label: "{{ item.name }}"
+  command:
+    cmd: microk8s.enable {{ item.name }}{% if microk8s_plugins[item.name] != True %}:{{ microk8s_plugins[item.name] }}{% endif %}
+  when:
+    - item.status == 'disabled'
+    - item.name in microk8s_plugins
+    - microk8s_plugins[item.name]
+
+- name: disable addons
+  become: yes
+  loop: "{{ microk8s_status.addons }}"
+  loop_control:
+    label: "{{ item.name }}"
+  command:
+    cmd: microk8s.disable {{ item.name }}
+  when:
+    - item.status == 'enabled'
+    - item.name in microk8s_plugins
+    - not microk8s_plugins[item.name]
