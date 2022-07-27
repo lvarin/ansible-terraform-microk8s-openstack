@@ -5,7 +5,7 @@ data "openstack_compute_flavor_v2" "flavor" {
 
 resource "openstack_compute_secgroup_v2" "secgroup_ssh" {
   name = "SSH-microk8s"
-  description = "my security group"
+  description = "SSH connection from world to microk8s"
 
   rule {
     from_port = 22
@@ -27,6 +27,18 @@ resource "openstack_compute_secgroup_v2" "secgroup_microk8s" {
   }
 }
 
+resource "openstack_compute_secgroup_v2" "HTTP_microk8s" {
+  name = "HTTPS-microk8s"
+  description = "External traffic to HTTPs"
+
+  rule {
+    from_port = 443
+    to_port = 443
+    ip_protocol = "tcp"
+    cidr = "193.166.85.235/24"
+  }
+}
+
 # Create the master
 resource "openstack_compute_instance_v2" "master" {
   name            = "${var.instance_master_name}"
@@ -34,7 +46,7 @@ resource "openstack_compute_instance_v2" "master" {
   flavor_id       = data.openstack_compute_flavor_v2.flavor.id
   key_pair        = var.keypair
   security_groups = ["${openstack_compute_secgroup_v2.secgroup_ssh.id}",
-                     "${openstack_compute_secgroup_v2.secgroup_microk8s.id}"
+                     "${openstack_compute_secgroup_v2.HTTP_microk8s.id}"
                     ]
   network {
     name = var.network
