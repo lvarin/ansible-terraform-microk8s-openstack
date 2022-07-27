@@ -11,9 +11,8 @@ variable "instance_prefix" {
 
 variable "instance_count" {
   type = string
-  default = "2" # Number of node VMs
-}  
-# Leave it to 1
+  default = "0" # Number of node VMs
+}
 
 variable "keypair" {
   type    = string
