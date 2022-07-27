@@ -32,6 +32,11 @@ data "openstack_images_image_v2" "image" {
   most_recent = true
 }
 
+variable "flavor" {
+  description = "Flavor to be used"
+  default     = "standard.medium"
+}
+
 variable "private_key_path" {
   description = "Path to the private SSH key, used to access the instance."
   default     = "~/.ssh/alvaro-key" # path where terraform will find the private key

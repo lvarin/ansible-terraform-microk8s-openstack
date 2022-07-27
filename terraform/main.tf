@@ -1,6 +1,6 @@
 ## Get flavor id
 data "openstack_compute_flavor_v2" "flavor" {
-  name = "standard.tiny" # flavor to be used
+  name = "${var.flavor}" # flavor to be used
 }
 
 resource "openstack_compute_secgroup_v2" "secgroup_ssh" {
