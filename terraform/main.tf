@@ -15,13 +15,27 @@ resource "openstack_compute_secgroup_v2" "secgroup_ssh" {
   }
 }
 
+resource "openstack_compute_secgroup_v2" "secgroup_microk8s" {
+  name = "internal-microk8s"
+  description = "Internal microk8s traffic"
+
+  rule {
+    from_port = 1
+    to_port = 65535
+    ip_protocol = "tcp"
+    cidr = "192.168.1.1/24"
+  }
+}
+
 # Create the master
 resource "openstack_compute_instance_v2" "master" {
   name            = "${var.instance_master_name}"
   image_id        = data.openstack_images_image_v2.image.id
   flavor_id       = data.openstack_compute_flavor_v2.flavor.id
   key_pair        = var.keypair
-  security_groups = ["${openstack_compute_secgroup_v2.secgroup_ssh.id}"]
+  security_groups = ["${openstack_compute_secgroup_v2.secgroup_ssh.id}",
+                     "${openstack_compute_secgroup_v2.secgroup_microk8s.id}"
+                    ]
   network {
     name = var.network
   }
