@@ -13,8 +13,19 @@ This is an example on how to deploy a microk8s cluster in an OpenStack instance 
 
 * Log in Openstack sourcing the openrc file that your Openstack instance provides.
 
+```sh
+. project_YYYXXXX-openrc.sh
+```
+
 * Edit `terraform/variables.tf` with the correct values for the name of **keypair** (`openstack keypair list`), **network** (`openstack network list`) and **security_groups** (`openstack security group list`).
 
 ```sh
 ansible-playbook site.yaml
 ```
+
+## Un-deploy
+
+```sh
+terraform -chdir=terraform destroy
+```
+
