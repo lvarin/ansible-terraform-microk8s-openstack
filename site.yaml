@@ -15,4 +15,8 @@
       delay: 30
       sleep: 10
 
+- name: Install Microk8s
+  hosts: all
+  roles:
+  - microk8s
 
