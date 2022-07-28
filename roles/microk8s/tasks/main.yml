@@ -79,9 +79,9 @@
       {% for host in groups['master'] %}
       {{ hostvars[host].ansible_default_ipv4.address }} {{ hostvars[host].ansible_hostname }} {{ hostvars[host].ansible_hostname }}.novalocal
       {% endfor %}
-      {% if 'taget_hosts' in groups %}
+      {% if 'compute' in groups %}
       {% for host in groups['compute'] %}
-      {{ hostvars[host].ansible_default_ipv4.address }} {{ hostvars[host].ansible_hostname }} {{ hostvars[host].inventory_hostname }}.nocalocal
+      {{ hostvars[host].ansible_default_ipv4.address }} {{ hostvars[host].ansible_hostname }} {{ hostvars[host].inventory_hostname }}.novalocal
       {% endfor %}
       {% endif %}
 
