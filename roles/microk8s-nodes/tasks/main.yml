@@ -1,0 +1,20 @@
+#
+# Add the nodes to the cluster
+#
+- name: Find the designated host
+  set_fact:
+    designated_host: '{{ (groups["master"]|sort)[0] }}'
+
+- name: Get the microk8s join command from the microk8s master
+  shell: "microk8s add-node | grep -E -m1 'microk8s join.*--worker'"
+  delegate_to: "{{ designated_host }}"
+  delegate_facts: true
+  changed_when: false
+  register: microk8s_join_command
+
+- name: Set the microk8s join command on the microk8s node
+  command: "{{ microk8s_join_command.stdout }}"
+  register: join_command_output
+  failed_when:
+    - "'already known to dqlite' not in join_command_output.stdout"
+    - join_command_output.rc > 0

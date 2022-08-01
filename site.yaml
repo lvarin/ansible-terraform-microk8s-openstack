@@ -18,5 +18,14 @@
 - name: Install Microk8s
   hosts: all
   roles:
-  - microk8s
+  - microk8s-install
 
+- name: Install microk8s-master
+  hosts: master
+  roles:
+  - microk8s-master
+
+- name: Install microk8s-nodes
+  hosts: compute
+  roles:
+  - microk8s-nodes
