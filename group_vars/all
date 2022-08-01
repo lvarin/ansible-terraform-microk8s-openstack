@@ -6,4 +6,4 @@ microk8s_plugins:
   helm: true
   dashboard: true
   ingress: true
-microk8s_user: cloud-user
+microk8s_user: ubuntu

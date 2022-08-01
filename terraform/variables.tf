@@ -27,7 +27,7 @@ variable "network" {
 # Data sources
 ## Get Image ID
 data "openstack_images_image_v2" "image" {
-  name        = "CentOS-7" # Name of image to be used
+  name        = "Ubuntu-20.04" # Name of image to be used
   most_recent = true
 }
 
@@ -43,5 +43,5 @@ variable "private_key_path" {
 
 variable "ssh_user" {
   description = "SSH user name to connect to your instance."
-  default     = "cloud-user"
+  default     = "ubuntu"
 }
