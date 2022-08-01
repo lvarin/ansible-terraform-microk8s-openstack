@@ -53,6 +53,9 @@ resource "openstack_compute_instance_v2" "master" {
   }
 }
 
+# TODO do not use the same key for inernal and external connections
+# create a new one for the master to connect to nodes
+
 # Create "instance_count" instances
 resource "openstack_compute_instance_v2" "server" {
   name            = "${var.instance_prefix}-${count.index}"
