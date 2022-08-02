@@ -12,6 +12,7 @@
   changed_when: false
   register: microk8s_join_command
 
+# TODO Only run when needed
 - name: Set the microk8s join command on the microk8s node
   command: "{{ microk8s_join_command.stdout }}"
   register: join_command_output
