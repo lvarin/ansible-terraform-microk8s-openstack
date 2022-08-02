@@ -1,5 +1,5 @@
 #
-# Add ons
+# Master
 #
 - name: get current addons state
   command:
@@ -32,3 +32,24 @@
     - item.status == 'enabled'
     - item.name in microk8s_plugins
     - not microk8s_plugins[item.name]
+
+#
+# Add floating IP to CERT
+#
+- name: Configuring IP to csr.conf.template file
+  lineinfile:
+    path: /var/snap/microk8s/current/certs/csr.conf.template
+    line: 'IP.6 = {{ hostvars[inventory_hostname]["ansible_ssh_host"] }}'
+    insertafter: IP.2
+
+- name: Resolving Dns
+  shell: nslookup {{ hostvars[inventory_hostname]["ansible_ssh_host"] }} | grep name
+  register: dns1
+- debug:
+    msg: "{{ dns1.stdout.split(' ')[2][:-1]}}"
+
+- name: Configuring DNS to csr.conf.template file
+  lineinfile:
+    path: /var/snap/microk8s/current/certs/csr.conf.template
+    line: DNS.6 = {{ dns1.stdout.split(' ')[2][:-1]}}
+    insertafter: DNS.5

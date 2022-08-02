@@ -24,9 +24,3 @@
     groups: "{{ item.groups }}"
     ansible_ssh_common_args: "{{item.ssh_args}}"
   loop: "{{ tf_results.outputs.inventory.value }}"
-
-- name: Master IP
-  debug:
-    msg: "Master IP: {{ item.ip }}"
-  loop: "{{ tf_results.outputs.inventory.value }}"
-  when: item.groups == "['master']"
