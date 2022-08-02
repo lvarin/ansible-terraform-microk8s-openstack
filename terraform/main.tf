@@ -11,8 +11,16 @@ resource "openstack_compute_secgroup_v2" "secgroup_ssh" {
     from_port = 22
     to_port = 22
     ip_protocol = "tcp"
-    cidr = "0.0.0.0/0"
+    cidr = "193.166.0.0/15"
   }
+
+  rule {
+    from_port = 22
+    to_port = 22
+    ip_protocol = "tcp"
+    cidr = "195.148.0.0/16"
+  }
+
 }
 
 resource "openstack_compute_secgroup_v2" "internal_microk8s" {
@@ -23,7 +31,7 @@ resource "openstack_compute_secgroup_v2" "internal_microk8s" {
     from_port = 1
     to_port = 65535
     ip_protocol = "tcp"
-    cidr = "192.168.1.1/24"
+    cidr = "192.168.0.0/16"
   }
 }
 
@@ -32,18 +40,33 @@ resource "openstack_compute_secgroup_v2" "HTTP_microk8s" {
   description = "External traffic to HTTPs"
 
   rule {
-    from_port = 443
-    to_port = 443
+    from_port = 16443
+    to_port = 16443
     ip_protocol = "tcp"
-    cidr = "193.166.85.235/24"
+    cidr = "193.166.0.0/15"
+  }
+
+  rule {
+    from_port = 16443
+    to_port = 16443
+    ip_protocol = "tcp"
+    cidr = "195.148.0.0/16"
   }
 
   rule {
     from_port = 443
     to_port = 443
     ip_protocol = "tcp"
-    cidr = "193.166.1.81/24"
+    cidr = "193.166.0.0/15"
   }
+
+  rule {
+    from_port = 443
+    to_port = 443
+    ip_protocol = "tcp"
+    cidr = "195.148.0.0/16"
+  }
+
 }
 
 # Create the master
