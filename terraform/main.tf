@@ -3,24 +3,29 @@ data "openstack_compute_flavor_v2" "flavor" {
   name = "${var.flavor}" # flavor to be used
 }
 
-resource "openstack_compute_secgroup_v2" "secgroup_ssh" {
+variable "cidr_list" {
+  default = {
+  "cscOfice1" = "193.166.1.0/24"
+  "cscOfice2" = "193.166.2.0/24"
+  "cscOfice3" = "193.166.80.0/23"
+  "vpnstaff"  = "193.166.85.0/24"
+  }
+}
+
+resource "openstack_networking_secgroup_v2" "secgroup_ssh" {
   name = "SSH-microk8s"
-  description = "SSH connection from world to microk8s"
+  description = "SSH connection from CSC to microk8s"
+}
 
-  rule {
-    from_port = 22
-    to_port = 22
-    ip_protocol = "tcp"
-    cidr = "193.166.0.0/15"
-  }
-
-  rule {
-    from_port = 22
-    to_port = 22
-    ip_protocol = "tcp"
-    cidr = "195.148.0.0/16"
-  }
-
+resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_22" {
+  for_each          = var.cidr_list
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 22
+  port_range_max    = 22
+  remote_ip_prefix  = each.value
+  security_group_id = "${openstack_networking_secgroup_v2.secgroup_ssh.id}"
 }
 
 resource "openstack_compute_secgroup_v2" "internal_microk8s" {
@@ -35,38 +40,31 @@ resource "openstack_compute_secgroup_v2" "internal_microk8s" {
   }
 }
 
-resource "openstack_compute_secgroup_v2" "HTTP_microk8s" {
+resource "openstack_networking_secgroup_v2" "HTTP_microk8s" {
   name = "HTTPS-microk8s"
   description = "External traffic to HTTPs"
+}
 
-  rule {
-    from_port = 16443
-    to_port = 16443
-    ip_protocol = "tcp"
-    cidr = "193.166.0.0/15"
-  }
+resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_16443" {
+  for_each          = var.cidr_list
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 16443
+  port_range_max    = 16443
+  remote_ip_prefix  = each.value
+  security_group_id = "${openstack_networking_secgroup_v2.HTTP_microk8s.id}"
+}
 
-  rule {
-    from_port = 16443
-    to_port = 16443
-    ip_protocol = "tcp"
-    cidr = "195.148.0.0/16"
-  }
-
-  rule {
-    from_port = 443
-    to_port = 443
-    ip_protocol = "tcp"
-    cidr = "193.166.0.0/15"
-  }
-
-  rule {
-    from_port = 443
-    to_port = 443
-    ip_protocol = "tcp"
-    cidr = "195.148.0.0/16"
-  }
-
+resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_443" {
+  for_each          = var.cidr_list
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 443
+  port_range_max    = 443
+  remote_ip_prefix  = each.value
+  security_group_id = "${openstack_networking_secgroup_v2.HTTP_microk8s.id}"
 }
 
 # Create the master
@@ -75,9 +73,9 @@ resource "openstack_compute_instance_v2" "master" {
   image_id        = data.openstack_images_image_v2.image.id
   flavor_id       = data.openstack_compute_flavor_v2.flavor.id
   key_pair        = var.keypair
-  security_groups = ["${openstack_compute_secgroup_v2.secgroup_ssh.id}",
+  security_groups = ["${openstack_networking_secgroup_v2.secgroup_ssh.id}",
                      "${openstack_compute_secgroup_v2.internal_microk8s.id}",
-                     "${openstack_compute_secgroup_v2.HTTP_microk8s.id}"
+                     "${openstack_networking_secgroup_v2.HTTP_microk8s.id}"
                     ]
   network {
     name = var.network
@@ -94,7 +92,7 @@ resource "openstack_compute_instance_v2" "server" {
   image_id        = data.openstack_images_image_v2.image.id
   flavor_id       = data.openstack_compute_flavor_v2.flavor.id
   key_pair        = var.keypair
-  security_groups = ["${openstack_compute_secgroup_v2.secgroup_ssh.id}",
+  security_groups = ["${openstack_networking_secgroup_v2.secgroup_ssh.id}",
                      "${openstack_compute_secgroup_v2.internal_microk8s.id}"
                     ]
   network {
