@@ -6,6 +6,8 @@
     cmd: microk8s.status --format yaml
   changed_when: no
   register: microk8s_status
+  retries : 60
+  delay: 5
 
 - name: set current state fact
   set_fact:
@@ -45,6 +47,7 @@
 - name: Resolving Dns
   shell: nslookup {{ hostvars[inventory_hostname]["ansible_ssh_host"] }} | grep name
   register: dns1
+  changed_when: False
 - debug:
     msg: "{{ dns1.stdout.split(' ')[2][:-1]}}"
 
