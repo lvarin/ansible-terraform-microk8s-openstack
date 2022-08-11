@@ -38,6 +38,13 @@ resource "openstack_compute_secgroup_v2" "internal_microk8s" {
     ip_protocol = "tcp"
     cidr = "192.168.0.0/16"
   }
+
+  rule {
+    from_port = 1
+    to_port = 65535
+    ip_protocol = "udp"
+    cidr = "192.168.0.0/16"
+  }
 }
 
 resource "openstack_networking_secgroup_v2" "HTTP_microk8s" {
