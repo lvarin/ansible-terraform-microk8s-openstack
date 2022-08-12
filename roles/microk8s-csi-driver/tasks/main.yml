@@ -1,0 +1,18 @@
+---
+- name: Install Helm env plugin
+  kubernetes.core.helm_plugin:
+    plugin_path: "https://github.com/databus23/helm-diff"
+    state: present
+
+- name: Add stable chart repo
+  kubernetes.core.helm_repository:
+    name: csi-driver-nfs
+    repo_url: "https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts"
+
+- name: 
+  kubernetes.core.helm:
+    name: csi-driver-nfs
+    chart_ref: csi-driver-nfs/csi-driver-nfs
+    release_namespace: kube-system
+    values:
+      kubeletDir: /var/snap/microk8s/common/var/lib/kubelet

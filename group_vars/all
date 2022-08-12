@@ -4,6 +4,7 @@ microk8s_plugins:
   rbac: true
   storage: true
   helm: true
+  helm3: true
   dashboard: true
   ingress: true
 microk8s_user: ubuntu

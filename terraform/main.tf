@@ -89,19 +89,30 @@ resource "openstack_compute_instance_v2" "master" {
   }
 }
 
+resource "openstack_compute_instance_v2" "nfs" {
+  name            = "microk8s-nfs"
+  count           = var.enable_nfs ? 1 : 0
+  image_id        = data.openstack_images_image_v2.image.id
+  flavor_id       = data.openstack_compute_flavor_v2.flavor.id
+  key_pair        = var.keypair
+  security_groups = ["${openstack_compute_secgroup_v2.internal_microk8s.id}"]
+  network {
+    name = var.network
+  }
+}
+
 # TODO do not use the same key for inernal and external connections
 # create a new one for the master to connect to nodes
 
 # Create "instance_count" instances
 resource "openstack_compute_instance_v2" "server" {
   name            = "${var.instance_prefix}-${count.index}"
-  count          = "${var.instance_count}"
+  count           = "${var.instance_count}"
   image_id        = data.openstack_images_image_v2.image.id
   flavor_id       = data.openstack_compute_flavor_v2.flavor.id
   key_pair        = var.keypair
-  security_groups = ["${openstack_networking_secgroup_v2.secgroup_ssh.id}",
-                     "${openstack_compute_secgroup_v2.internal_microk8s.id}"
-                    ]
+  security_groups = ["${openstack_compute_secgroup_v2.internal_microk8s.id}"]
+
   network {
     name = var.network
   }
@@ -147,7 +158,16 @@ output "inventory" {
         "ansible_ssh_user" : "${var.ssh_user}",
         "private_key_file" : "${var.private_key_path}",
         "ssh_args"         : "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o \"ProxyCommand ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${var.private_key_path} -W %h:%p ${var.ssh_user}@${openstack_networking_floatingip_v2.fip1.address}\""
-      } ]
+      } ],
+      [ for key, item in openstack_compute_instance_v2.nfs :
+        {
+          "groups"           : "['nfs']",
+          "name"             : item.name,
+          "ip"               : item.access_ip_v4,
+          "ansible_ssh_user" : "${var.ssh_user}",
+          "private_key_file" : "${var.private_key_path}",
+          "ssh_args"         : "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o \"ProxyCommand ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${var.private_key_path} -W %h:%p ${var.ssh_user}@${openstack_networking_floatingip_v2.fip1.address}\""
+        }]
   )
 }
 

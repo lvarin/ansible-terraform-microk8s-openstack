@@ -16,7 +16,9 @@
       sleep: 10
 
 - name: Install Microk8s
-  hosts: all
+  hosts:
+  - master
+  - compute
   roles:
   - microk8s-install
 
@@ -29,3 +31,17 @@
   hosts: compute
   roles:
   - microk8s-nodes
+
+- name: Install microk8s-nfs
+  hosts: nfs
+  roles:
+  - microk8s-nfs
+
+- name: Install the CSI driver for NFS
+  hosts: master
+  collections:
+  - kubernetes.core
+  - community.kubernetes
+  - cloud.common
+  roles:
+  - microk8s-csi-driver

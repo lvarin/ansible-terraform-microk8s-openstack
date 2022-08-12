@@ -1,0 +1,83 @@
+---
+- name: Install NFS
+  become: yes
+  package:
+    name: nfs-kernel-server
+    state: present
+
+- name: Create a directory if it does not exist
+  become: yes
+  file:
+    path: /srv/nfs
+    state: directory
+    mode: '0777'
+    owner: nobody
+    group: nogroup
+
+- name: Add export
+  become: yes
+  lineinfile:
+    path: /etc/exports
+    line: '/srv/nfs 192.168.0.0/16(rw,sync,no_subtree_check)'
+  register: nfs_exports
+
+- name: Restart NFS service 
+  become: yes
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: nfs-kernel-server
+  when: nfs_exports.changed
+
+###
+
+- name: Update apt cache
+  become: yes
+  apt:
+    cache_valid_time: 3600
+    update_cache: yes
+  when: ansible_distribution == 'Ubuntu'
+
+- name: ensure python3 is installed
+  become: yes
+  ansible.builtin.package:
+    name:
+      - python3
+      - python3-pip
+    state: present
+
+- name: install kubernetes pip package
+  pip:
+    name: kubernetes
+    state: present
+
+- name: Create .kube
+  file:
+    path: .kube
+    state: directory
+
+#### In master ###
+- name: Create config file in master
+  shell: microk8s config >config
+  args:
+    creates: config
+  delegate_to: "{{groups['master'][0]}}"
+
+- name: Fetch the keyfile from one server to another
+  fetch: 
+    src: config
+    dest: "buffer/config"
+    flat: yes
+  delegate_to: "{{groups['master'][0]}}"
+
+####
+
+- name: Copy config from master
+  copy:
+    src: buffer/config
+    dest: .kube/config
+
+- name: Create StorageClass
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'sc-nfs.yaml') | from_yaml }}"

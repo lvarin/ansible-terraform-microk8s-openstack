@@ -14,6 +14,11 @@ variable "instance_count" {
   default = "0" # Number of node VMs
 }
 
+variable "enable_nfs" {
+  type = bool
+  default = true
+}
+
 variable "keypair" {
   type    = string
   default = "alvaro-key"   # name of keypair that will have access to the VM
