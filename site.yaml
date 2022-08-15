@@ -23,6 +23,12 @@
         {% for host in groups['all'] %}
         {{ hostvars[host]['ansible_default_ipv4']['address'] }} {{ hostvars[host]['ansible_fqdn'] }} {{ hostvars[host]['ansible_hostname'] }}.novalocal
         {% endfor %}
+  - name: Set authorized key taken from files
+    authorized_key:
+      user: "{{ microk8s_user }}"
+      state: present
+      key: "{{ lookup('file', item) }}"
+    with_fileglob: "keys/*"
 
 - name: Install Microk8s
   hosts:

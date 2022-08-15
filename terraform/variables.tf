@@ -50,3 +50,12 @@ variable "ssh_user" {
   description = "SSH user name to connect to your instance."
   default     = "ubuntu"
 }
+
+variable "cidr_list" {
+  default = {
+  "cscOfice1" = "193.166.1.0/24"
+  "cscOfice2" = "193.166.2.0/24"
+  "cscOfice3" = "193.166.80.0/23"
+  "vpnstaff"  = "193.166.85.0/24"
+  }
+}

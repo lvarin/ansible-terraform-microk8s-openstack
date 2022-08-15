@@ -3,14 +3,6 @@ data "openstack_compute_flavor_v2" "flavor" {
   name = "${var.flavor}" # flavor to be used
 }
 
-variable "cidr_list" {
-  default = {
-  "cscOfice1" = "193.166.1.0/24"
-  "cscOfice2" = "193.166.2.0/24"
-  "cscOfice3" = "193.166.80.0/23"
-  "vpnstaff"  = "193.166.85.0/24"
-  }
-}
 
 resource "openstack_networking_secgroup_v2" "secgroup_ssh" {
   name = "SSH-microk8s"
