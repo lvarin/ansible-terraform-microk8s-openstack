@@ -154,7 +154,7 @@ output "inventory" {
         {
         "groups"           : "['compute']",
         "name"             : item.name,
-        "ip"               : item.network.0.fixed_ip_v4,
+        "ip"               : item.access_ip_v4,
         "ansible_ssh_user" : "${var.ssh_user}",
         "private_key_file" : "${var.private_key_path}",
         "ssh_args"         : "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o \"ProxyCommand ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${var.private_key_path} -W %h:%p ${var.ssh_user}@${openstack_networking_floatingip_v2.fip1.address}\""
