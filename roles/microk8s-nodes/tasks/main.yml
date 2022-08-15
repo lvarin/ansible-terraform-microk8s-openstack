@@ -21,7 +21,6 @@
   register: microk8s_join_command
   when: microk8s_status.stdout is not search("deployment is acting as a node in a cluster")
 
-# TODO Only run when needed
 - name: Set the microk8s join command on the microk8s node
   command: "{{ microk8s_join_command.stdout }}"
   register: join_command_output
