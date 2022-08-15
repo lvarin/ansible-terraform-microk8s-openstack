@@ -45,12 +45,3 @@
   hosts: nfs
   roles:
   - microk8s-nfs
-
-- name: Install the CSI driver for NFS
-  hosts: master
-  collections:
-  - kubernetes.core
-  - community.kubernetes
-  - cloud.common
-  roles:
-  - microk8s-csi-driver
