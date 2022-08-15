@@ -51,6 +51,10 @@ variable "ssh_user" {
   default     = "ubuntu"
 }
 
+variable "control_port" {
+  default = 16443
+}
+
 variable "cidr_list" {
   default = {
   "cscOfice1" = "193.166.1.0/24"

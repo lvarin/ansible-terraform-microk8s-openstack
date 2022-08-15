@@ -49,8 +49,8 @@ resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_16443" {
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"
-  port_range_min    = 16443
-  port_range_max    = 16443
+  port_range_min    = var.control_port
+  port_range_max    = var.control_port
   remote_ip_prefix  = each.value
   security_group_id = "${openstack_networking_secgroup_v2.HTTP_microk8s.id}"
 }
