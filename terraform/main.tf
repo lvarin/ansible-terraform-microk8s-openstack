@@ -93,9 +93,6 @@ resource "openstack_compute_instance_v2" "nfs" {
   }
 }
 
-# TODO do not use the same key for inernal and external connections
-# create a new one for the master to connect to nodes
-
 # Create "instance_count" instances
 resource "openstack_compute_instance_v2" "server" {
   name            = "${var.instance_prefix}-${count.index}"
@@ -142,7 +139,7 @@ output "inventory" {
         "private_key_file" : "${var.private_key_path}",
         "ssh_args"         : "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
       } ],
-      [ for key, item in openstack_compute_instance_v2.server : 
+      [ for key, item in openstack_compute_instance_v2.server :
         {
         "groups"           : "['compute']",
         "name"             : item.name,
