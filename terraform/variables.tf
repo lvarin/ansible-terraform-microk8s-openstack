@@ -9,6 +9,11 @@ variable "instance_prefix" {
   default = "microk8s-node" # Name of the VM to create
 }
 
+variable "nfs_node_name" {
+  type = string
+  default = "microk8s-nfs"
+}
+
 variable "instance_count" {
   type = string
   default = "0" # Number of node VMs

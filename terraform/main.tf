@@ -82,7 +82,7 @@ resource "openstack_compute_instance_v2" "master" {
 }
 
 resource "openstack_compute_instance_v2" "nfs" {
-  name            = "microk8s-nfs"
+  name            = "${var.nfs_node_name}"
   count           = var.enable_nfs ? 1 : 0
   image_id        = data.openstack_images_image_v2.image.id
   flavor_id       = data.openstack_compute_flavor_v2.flavor.id
