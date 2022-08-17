@@ -81,9 +81,14 @@ resource "openstack_compute_instance_v2" "master" {
   }
 }
 
+resource "openstack_blockstorage_volume_v2" "volume_1" {
+  name        = "microk8s-nfs"
+  description = "first test volume"
+  size        = var.nfs_volume_size
+}
+
 resource "openstack_compute_instance_v2" "nfs" {
   name            = "${var.nfs_node_name}"
-  count           = var.enable_nfs ? 1 : 0
   image_id        = data.openstack_images_image_v2.image.id
   flavor_id       = data.openstack_compute_flavor_v2.flavor.id
   key_pair        = var.keypair
@@ -91,6 +96,11 @@ resource "openstack_compute_instance_v2" "nfs" {
   network {
     name = var.network
   }
+}
+
+resource "openstack_compute_volume_attach_v2" "va_1" {
+  instance_id = "${openstack_compute_instance_v2.nfs.id}"
+  volume_id   = "${openstack_blockstorage_volume_v2.volume_1.id}"
 }
 
 # Create "instance_count" instances
@@ -148,11 +158,11 @@ output "inventory" {
         "private_key_file" : "${var.private_key_path}",
         "ssh_args"         : "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o \"ProxyCommand ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${var.private_key_path} -W %h:%p ${var.ssh_user}@${openstack_networking_floatingip_v2.fip1.address}\""
       } ],
-      [ for key, item in openstack_compute_instance_v2.nfs :
+      [
         {
           "groups"           : "['nfs']",
-          "name"             : item.name,
-          "ip"               : item.access_ip_v4,
+          "name"             : "${openstack_compute_instance_v2.nfs.name}",
+          "ip"               : "${openstack_compute_instance_v2.nfs.access_ip_v4}"
           "ansible_ssh_user" : "${var.ssh_user}",
           "private_key_file" : "${var.private_key_path}",
           "ssh_args"         : "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o \"ProxyCommand ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${var.private_key_path} -W %h:%p ${var.ssh_user}@${openstack_networking_floatingip_v2.fip1.address}\""

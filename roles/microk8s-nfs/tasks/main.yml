@@ -5,29 +5,7 @@
     name: nfs-kernel-server
     state: present
 
-- name: Create a directory if it does not exist
-  become: yes
-  file:
-    path: /srv/nfs
-    state: directory
-    mode: '0777'
-    owner: nobody
-    group: nogroup
 
-- name: Add export
-  become: yes
-  lineinfile:
-    path: /etc/exports
-    line: '/srv/nfs 192.168.0.0/16(rw,sync,no_subtree_check)'
-  register: nfs_exports
-
-- name: Restart NFS service 
-  become: yes
-  systemd:
-    state: restarted
-    daemon_reload: yes
-    name: nfs-kernel-server
-  when: nfs_exports.changed
 
 ###
 
@@ -102,3 +80,42 @@
   kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('template', 'sc-nfs.yaml') | from_yaml }}"
+
+#
+
+- name: Create a directory if it does not exist
+  become: yes
+  file:
+    path: /srv/nfs
+    state: directory
+    mode: '0777'
+    owner: nobody
+    group: nogroup
+
+- name: Add export
+  become: yes
+  lineinfile:
+    path: /etc/exports
+    line: '/srv/nfs 192.168.0.0/16(rw,sync,no_subtree_check)'
+  register: nfs_exports
+
+- name: Restart NFS service
+  become: yes
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: nfs-kernel-server
+  when: nfs_exports.changed
+- name: Create a ext4 filesystem on /dev/vdb
+  become: yes
+  filesystem:
+    fstype: ext4
+    dev: /dev/vdb
+
+- name: Mount volume for NFS
+  become: yes
+  mount:
+    path: /srv/nfs
+    src: /dev/vdb
+    state: mounted
+    fstype: ext4

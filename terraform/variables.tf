@@ -30,16 +30,15 @@ variable "instance_count" {
   default = "0" # Number of node VMs
 }
 
-variable "enable_nfs" {
-  type = bool
-  default = true
-}
-
 variable "flavor" {
   description = "Flavor to be used"
   default     = "standard.medium"
 }
 
+variable "nfs_volume_size" {
+  description = "Size in Gigabytes of the NFS volume"
+  default = 50
+}
 # Other
 
 variable "instance_master_name" {

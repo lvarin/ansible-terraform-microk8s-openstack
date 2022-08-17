@@ -27,8 +27,8 @@ Currently there are two files used to configure this deployment: `terraform/vari
 
   The other variables have sensible defaults. You may check them out and change them to tune the cluster configuration.
   * **instance_count**, number of worker nodes. With 0 worker nodes (the default) the master node will run the applications.
-  * **enable_nfs**, enable of disable an extra node to provide an NFS storage class. It is enabled by default.
   * **flavor**, Openstack flavor for the Virtual Machines.
+  * **nfs_volume_size**, size in Gigabyes for the NFS volume. Resize is not supported, when changing the size, a cluster recreation is recommended.
   * **instance_master_name**, name of the master Virtual machine.
   * **instance_prefix**, prefix of the name of the worker nodes. A hiphen and a number will be added to form the worker node name. By default the first node will be called `microk8s-node-0`, the second `microk8s-node-1` and so on.
   * **nfs_node_name**, name of the NFS virtual machine.
