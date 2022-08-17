@@ -24,6 +24,7 @@ Currently there are two files used to configure this deployment: `terraform/vari
   * **network**, this is the name of the network the Virtual Machines will be attached to. You can get the list with `openstack network list`.
   * **private_key_path**, this is the path on you computer where Terraform will find the private key. This private key has to be the pair of the public key selected in _keypair_.
   * **cidr_list**, list of CIDRs (an IP range) that will be able to access the cluster.
+
   The other variables have sensible defaults. You may check them out and change them to tune the cluster configuration.
   * **instance_count**, number of worker nodes. With 0 worker nodes (the default) the master node will run the applications.
   * **enable_nfs**, enable of disable an extra node to provide an NFS storage class. It is enabled by default.
