@@ -60,6 +60,7 @@ This will deploy the Virtual Machines and configure them. The cluster will be re
 ```
 
 **Note:** Replace `<microk8s_master>` with the master's floating ip.
+
 **Note 2:** In order to tell kubectl where is the config file simply do `kubectl --kubeconfig config`. Or copy it to the default path: `$HOME/.kube/config`.
 
 ## Un-deploy
