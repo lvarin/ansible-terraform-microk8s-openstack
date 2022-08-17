@@ -1,6 +1,6 @@
-# Terraform Ansible microk8s OpenStack
+# Terraform+Ansible microk8s OpenStack deployment
 
-This is an example on how to deploy a microk8s cluster in an OpenStack instance using Terraform and ansible. It is based on the following repositories:
+This is an example on how to deploy a microk8s cluster in an OpenStack instance using Terraform and aAnsible. It is based on the following repositories:
 
 * https://github.com/lvarin/ansible-terraform-example.git
 * https://github.com/fabianlee/microk8s-nginx-istio.git
@@ -17,15 +17,55 @@ This is an example on how to deploy a microk8s cluster in an OpenStack instance 
 . project_YYYXXXX-openrc.sh
 ```
 
-* Edit `terraform/variables.tf` with the correct values for the name of **keypair** (`openstack keypair list`), **network** (`openstack network list`) and **security_groups** (`openstack security group list`).
+Currently there are two files used to configure this deployment: `terraform/variables.tf` and `group_vars/all`.
+
+* In `terraform/variables.tf` you need to fill up the compulsory variables:
+  * **keypair**, this is the name of the public ssh key thjat will be added to the Virtual Machines. You can the list of keys installed in OpenStack with `openstack keypair list`.
+  * **network**, this is the name of the network the Virtual Machines will be attached to. You can get the list with `openstack network list`.
+  * **private_key_path**, this is the path on you computer where Terraform will find the private key. This private key has to be the pair of the public key selected in _keypair_.
+  * **cidr_list**, list of CIDRs (an IP range) that will be able to access the cluster.
+  The other variables have sensible defaults. You may check them out and change them to tune the cluster configuration.
+  * **instance_count**, number of worker nodes. With 0 worker nodes (the default) the master node will run the applications.
+  * **enable_nfs**, enable of disable an extra node to provide an NFS storage class. It is enabled by default.
+  * **flavor**, Openstack flavor for the Virtual Machines.
+  * **instance_master_name**, name of the master Virtual machine.
+  * **instance_prefix**, prefix of the name of the worker nodes. A hiphen and a number will be added to form the worker node name. By default the first node will be called `microk8s-node-0`, the second `microk8s-node-1` and so on.
+  * **nfs_node_name**, name of the NFS virtual machine.
+  * **ssh_user**, name of the username to login in the Virtual machines. It must correspond to the one configured on the OS image used.
+
+* In `group_vars/all` all variables have sensitive defaults.
+  * **microk8s_version**, version to install.
+  * **microk8s_plugins**, allows to enable or disable individual `microk8s` plugins.
+  * **microk8s_user**, same user as _ssh_user_.
+
+After all variables are properly set, simply run:
 
 ```sh
 ansible-playbook site.yaml
 ```
+
+This will deploy the Virtual Machines and configure them. The cluster will be ready for use.
+
+### Kubectl configuration
+
+`kubectl` is the command line tool to interact with a Kubernetes cluster. The master node has `kubectl` installed by default. It is possible to install and configure `kubectl` in any remote computer to interact with this cluster. There are 3 steps:
+
+1. [Install kubectl](https://kubernetes.io/docs/tasks/tools/)
+1. Make sure that the computer's IP belongs to one of the CIDRs configured in _cidr_list_.
+1. Generate and copy a `config` file:
+
+  ```sh
+  ssh ubuntu@<microk8s_master> microk8s.config >config
+```
+
+**Note:** Replace `<microk8s_master>` with the master's floating ip.
+**Note 2:** In order to tell kubectl where is the config file simply do `kubectl --kubeconfig config`. Or copy it to the default path: `$HOME/.kube/config`.
 
 ## Un-deploy
 
 ```sh
 terraform -chdir=terraform destroy
 ```
+
+**This will destroy the cluster and all its data**
 
