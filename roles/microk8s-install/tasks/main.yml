@@ -8,7 +8,7 @@
 - name: Add login user to microk8s group
   become: yes
   user:
-    name: "{{ microk8s_user }}"
+    name: "{{ ssh_user }}"
     groups:
       - microk8s
     append: true

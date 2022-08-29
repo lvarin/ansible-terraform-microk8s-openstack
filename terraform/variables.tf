@@ -1,32 +1,29 @@
-# Compulsory variables
+#
+# DO NOT MODIFY THIS FILE, MODIFY 'group_vars/all' INSTEAD
+#
 variable "keypair" {
   type    = string
-  default = "XXXXX"   # name of keypair that will have access to the VMs
+  default = ""   # name of keypair that will have access to the VMs
 }
 
 variable "network" {
   type    = string
-  default = "project_YYYYY" # default network to be used
+  default = "" # default network to be used
 }
 
 variable "private_key_path" {
   description = "Path to the private SSH key, used to access the instance."
-  default     = "~/.ssh/XXXXX" # path where terraform will find the private key
+  default     = "" # path where terraform will find the private key
 }
 
 variable "cidr_list" {
-  default = {
-  "cscOfice1" = "193.166.1.0/24"
-  "cscOfice2" = "193.166.2.0/24"
-  "cscOfice3" = "193.166.80.0/23"
-  "vpnstaff"  = "193.166.85.0/24"
-  }
+  type    = string
+  default = ""
 }
 
 variable "cidr_ssh" {
-  default = {
-    "world" = "0.0.0.0/0"
-  }
+  type    = string
+  default = ""
 }
 
 # Configuration variables

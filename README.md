@@ -23,34 +23,24 @@ pip install ansible
 . project_YYYXXXX-openrc.sh
 ```
 
-Currently there are two files used to configure this deployment: `terraform/variables.tf` and `group_vars/all`.
+In order to configure this deployment the file `group_vars/all` must be used.
 
-* In `terraform/variables.tf` you need to fill up the compulsory variables:
-
-|Name|Description|
-|-:|:-|
-|**network**|this is the name of the network the Virtual Machines will be attached to. You can get the list with `openstack network list`.|
-|**keypair**|this is the name of the public ssh key stored in OpenStack that will be added to the Virtual Machines. You can get the list of keys installed in OpenStack with `openstack keypair list`. You must choose one key from that list.
-|**private_key_path**|this is the path on you computer where Terraform will find the private key. This private key has to be the pair of the public key selected in _keypair_.|
-|**cidr_list**|list of CIDRs (an IP range) that will be able to access the cluster.|
-|**cidr_ssh**|list of CIDRs (an IP range) that will be able to SSH to the cluster nodes, by default all IPs (`0.0.0.0/0`) )are allowed to conntect.|
-
-  The other variables have sensible defaults. You may check them out and change them to tune the cluster configuration:
-
-|Name|Description|
-|-:|:-|
-|**instance_count**|number of worker nodes. With 0 worker nodes (the default) the master node will run the applications.|
-|**flavor**|Openstack flavor for the Virtual Machines.|
-|**nfs_volume_size**|size in Gigabyes for the NFS volume. Resize is not supported, when changing the size, a cluster recreation is recommended.|
-|**instance_master_name**|name of the master Virtual machine.|
-|**instance_prefix**|prefix of the name of the worker nodes. A hiphen and a number will be added to form the worker node name. By default the first node will be called `microk8s-node-0`, the second `microk8s-node-1` and so on.|
-|**nfs_node_name**|name of the NFS virtual machine.|
-|**ssh_user**|name of the username to login in the Virtual machines. It must correspond to the one configured on the OS image used.|
-
-* In `group_vars/all` all variables have sensible defaults.
-  * **microk8s_version**, version to install.
-  * **microk8s_plugins**, allows to enable or disable individual `microk8s` plugins.
-  * **microk8s_user**, same user as _ssh_user_.
+|Name|Description|Default|
+|-:|:-|:-:|
+|**network**|this is the name of the network the Virtual Machines will be attached to. You can get the list with `openstack network list`.|-|
+|**keypair**|this is the name of the public ssh key stored in OpenStack that will be added to the Virtual Machines. You can get the list of keys installed in OpenStack with `openstack keypair list`. You must choose one key from that list.|-|
+|**private_key_path**|this is the path on you computer where Terraform will find the private key. This private key has to be the pair of the public key selected in _keypair_.|-|
+|**cidr_list**|list of CIDRs (an IP range) that will be able to access the cluster.|`193.166.1.0/24,193.166.2.0/24, 193.166.80.0/23, 193.166.85.0/24`|
+|**cidr_ssh**|list of CIDRs (an IP range) that will be able to SSH to the cluster nodes| `0.0.0.0/0` # Any IP|
+|**instance_count**|number of worker nodes.|0 # the master node will run the applications|
+|**flavor**|Openstack flavor for the Virtual Machines.|`standard.medium`|
+|**nfs_volume_size**|size in Gigabyes for the NFS volume. Resize is not supported, when changing the size, a cluster recreation is recommended.|`50`|
+|**instance_master_name**|name of the master Virtual machine.|`microk8s-master`|
+|**instance_prefix**|prefix of the name of the worker nodes. A hiphen and a number will be added to form the worker node name. By default the first node will be called `microk8s-node-0`, the second `microk8s-node-1` and so on.|`microk8s-node`|
+|**nfs_node_name**|name of the NFS virtual machine.|`microk8s-nfs`|
+|**ssh_user**|name of the username to login in the Virtual machines. It must correspond to the one configured on the OS image used.|`ubuntu`|
+|**microk8s_version**, version to install.|`1.24`|
+|**microk8s_plugins**, allows to enable or disable individual `microk8s` plugins.||
 
 After all variables are properly set, simply run:
 

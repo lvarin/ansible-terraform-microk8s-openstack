@@ -7,9 +7,21 @@
     # Here we can override variables defined within the Terraform modules
     # Note that all variables that we want to override need to be present
     # in main.tf, even though they might be defined in a module
-    # TODO Needs ansible >2.10
-    #variables:
-    #  instance_count: 2
+    # Needs ansible >2.10
+    variables:
+      network: "{{ network }}"
+      keypair: "{{ keypair }}"
+      private_key_path: "{{ private_key_path }}"
+      cidr_ssh: "{{ cidr_ssh }}"
+      cidr_list: "{{ cidr_list }}"
+      instance_count: "{{ instance_count }}"
+      flavor: "{{ flavor }}"
+      nfs_volume_size: "{{ nfs_volume_size }}"
+      instance_master_name: "{{ instance_master_name }}"
+      instance_prefix: "{{ instance_prefix }}"
+      nfs_node_name: "{{ nfs_node_name }}"
+      ssh_user: "{{ ssh_user }}"
+      control_port: "{{ control_port }}"
   register: tf_results
 
 # Now iterate over the list returned by Terraform and build
