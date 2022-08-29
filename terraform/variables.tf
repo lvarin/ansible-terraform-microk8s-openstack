@@ -1,17 +1,17 @@
 # Compulsory variables
 variable "keypair" {
   type    = string
-  default = "alvaro-key"   # name of keypair that will have access to the VMs
+  default = "XXXXX"   # name of keypair that will have access to the VMs
 }
 
 variable "network" {
   type    = string
-  default = "project_2001316" # default network to be used
+  default = "project_YYYYY" # default network to be used
 }
 
 variable "private_key_path" {
   description = "Path to the private SSH key, used to access the instance."
-  default     = "~/.ssh/alvaro-key" # path where terraform will find the private key
+  default     = "~/.ssh/XXXXX" # path where terraform will find the private key
 }
 
 variable "cidr_list" {

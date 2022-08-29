@@ -11,6 +11,12 @@ This is an example on how to deploy a microk8s cluster in an OpenStack instance 
 
 * [Install terraform](https://www.terraform.io/downloads.html)
 
+* Install ansible `>2.10` or above, use Python `v3.8` or above:
+
+```sh
+pip install ansible
+```
+
 * Log in Openstack sourcing the openrc file that your Openstack instance provides.
 
 ```sh
