@@ -23,6 +23,12 @@ variable "cidr_list" {
   }
 }
 
+variable "cidr_ssh" {
+  default = {
+    "world" = "0.0.0.0/0"
+  }
+}
+
 # Configuration variables
 
 variable "instance_count" {
