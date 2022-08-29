@@ -9,7 +9,8 @@
   become: yes
   user:
     name: "{{ microk8s_user }}"
-    group: microk8s
+    groups:
+      - microk8s
     append: true
 
 - name: reset ssh connection
