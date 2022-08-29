@@ -23,21 +23,25 @@ Currently there are two files used to configure this deployment: `terraform/vari
 
 |Name|Description|
 |-:|:-|
-|**keypair**|this is the name of the public ssh key stored in OpenStack that will be added to the Virtual Machines. You can get the list of keys installed in OpenStack with `openstack keypair list`. You must choose one key from that list.
 |**network**|this is the name of the network the Virtual Machines will be attached to. You can get the list with `openstack network list`.|
+|**keypair**|this is the name of the public ssh key stored in OpenStack that will be added to the Virtual Machines. You can get the list of keys installed in OpenStack with `openstack keypair list`. You must choose one key from that list.
 |**private_key_path**|this is the path on you computer where Terraform will find the private key. This private key has to be the pair of the public key selected in _keypair_.|
 |**cidr_list**|list of CIDRs (an IP range) that will be able to access the cluster.|
+|**cidr_ssh**|list of CIDRs (an IP range) that will be able to SSH to the cluster nodes, by default all IPs (`0.0.0.0/0`) )are allowed to conntect.|
 
-  The other variables have sensible defaults. You may check them out and change them to tune the cluster configuration.
-  * **instance_count**, number of worker nodes. With 0 worker nodes (the default) the master node will run the applications.
-  * **flavor**, Openstack flavor for the Virtual Machines.
-  * **nfs_volume_size**, size in Gigabyes for the NFS volume. Resize is not supported, when changing the size, a cluster recreation is recommended.
-  * **instance_master_name**, name of the master Virtual machine.
-  * **instance_prefix**, prefix of the name of the worker nodes. A hiphen and a number will be added to form the worker node name. By default the first node will be called `microk8s-node-0`, the second `microk8s-node-1` and so on.
-  * **nfs_node_name**, name of the NFS virtual machine.
-  * **ssh_user**, name of the username to login in the Virtual machines. It must correspond to the one configured on the OS image used.
+  The other variables have sensible defaults. You may check them out and change them to tune the cluster configuration:
 
-* In `group_vars/all` all variables have sensitive defaults.
+|Name|Description|
+|-:|:-|
+|**instance_count**|number of worker nodes. With 0 worker nodes (the default) the master node will run the applications.|
+|**flavor**|Openstack flavor for the Virtual Machines.|
+|**nfs_volume_size**|size in Gigabyes for the NFS volume. Resize is not supported, when changing the size, a cluster recreation is recommended.|
+|**instance_master_name**|name of the master Virtual machine.|
+|**instance_prefix**|prefix of the name of the worker nodes. A hiphen and a number will be added to form the worker node name. By default the first node will be called `microk8s-node-0`, the second `microk8s-node-1` and so on.|
+|**nfs_node_name**|name of the NFS virtual machine.|
+|**ssh_user**|name of the username to login in the Virtual machines. It must correspond to the one configured on the OS image used.|
+
+* In `group_vars/all` all variables have sensible defaults.
   * **microk8s_version**, version to install.
   * **microk8s_plugins**, allows to enable or disable individual `microk8s` plugins.
   * **microk8s_user**, same user as _ssh_user_.
@@ -45,6 +49,8 @@ Currently there are two files used to configure this deployment: `terraform/vari
 After all variables are properly set, simply run:
 
 ```sh
+terraform -chdir=terraform init
+# This must be run only once to initiliaze Terraform's plugins
 ansible-playbook site.yaml
 ```
 
