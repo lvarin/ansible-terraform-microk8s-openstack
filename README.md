@@ -20,10 +20,13 @@ This is an example on how to deploy a microk8s cluster in an OpenStack instance 
 Currently there are two files used to configure this deployment: `terraform/variables.tf` and `group_vars/all`.
 
 * In `terraform/variables.tf` you need to fill up the compulsory variables:
-  * **keypair**, this is the name of the public ssh key stored in OpenStack that will be added to the Virtual Machines. You can get the list of keys installed in OpenStack with `openstack keypair list`. You must choose one key from that list.
-  * **network**, this is the name of the network the Virtual Machines will be attached to. You can get the list with `openstack network list`.
-  * **private_key_path**, this is the path on you computer where Terraform will find the private key. This private key has to be the pair of the public key selected in _keypair_.
-  * **cidr_list**, list of CIDRs (an IP range) that will be able to access the cluster.
+
+|Name|Description|
+|-:|:-|
+|**keypair**|this is the name of the public ssh key stored in OpenStack that will be added to the Virtual Machines. You can get the list of keys installed in OpenStack with `openstack keypair list`. You must choose one key from that list.
+|**network**|this is the name of the network the Virtual Machines will be attached to. You can get the list with `openstack network list`.|
+|**private_key_path**|this is the path on you computer where Terraform will find the private key. This private key has to be the pair of the public key selected in _keypair_.|
+|**cidr_list**|list of CIDRs (an IP range) that will be able to access the cluster.|
 
   The other variables have sensible defaults. You may check them out and change them to tune the cluster configuration.
   * **instance_count**, number of worker nodes. With 0 worker nodes (the default) the master node will run the applications.
