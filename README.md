@@ -1,11 +1,11 @@
 # Terraform+Ansible microk8s OpenStack deployment
 
-This is an example on how to deploy a microk8s cluster in an OpenStack instance using Terraform and aAnsible. It is based on the following repositories:
+This is an example of how to deploy a microk8s cluster in an OpenStack instance using Terraform and Ansible. It is based on the following repositories:
 
-* https://github.com/lvarin/ansible-terraform-example.git
-* https://github.com/fabianlee/microk8s-nginx-istio.git
-* https://github.com/istvano/ansible_role_microk8s
-* https://fabianlee.org/2021/07/25/kubernetes-microk8s-cluster-on-ubuntu-using-ansible/
+* <https://github.com/lvarin/ansible-terraform-example.git>
+* <https://github.com/fabianlee/microk8s-nginx-istio.git>
+* <https://github.com/istvano/ansible_role_microk8s>
+* <https://fabianlee.org/2021/07/25/kubernetes-microk8s-cluster-on-ubuntu-using-ansible/>
 
 ## Quick start
 
@@ -75,4 +75,3 @@ terraform -chdir=terraform destroy
 ```
 
 **This will destroy the cluster and all its data**
-
