@@ -25,7 +25,7 @@
         {% endfor %}
   - name: Set authorized key taken from files
     authorized_key:
-      user: "{{ microk8s_user }}"
+      user: "{{ ssh_user }}"
       state: present
       key: "{{ lookup('file', item) }}"
     with_fileglob: "keys/*"

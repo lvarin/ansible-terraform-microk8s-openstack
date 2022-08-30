@@ -10,7 +10,7 @@ resource "openstack_networking_secgroup_v2" "secgroup_ssh" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_22" {
-  for_each          = var.cidr_list
+  for_each          = toset(split(",", var.cidr_ssh))
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"
@@ -45,7 +45,7 @@ resource "openstack_networking_secgroup_v2" "HTTP_microk8s" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_16443" {
-  for_each          = var.cidr_list
+  for_each          = toset(split(",", var.cidr_list))
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"
@@ -56,7 +56,7 @@ resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_16443" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_443" {
-  for_each          = var.cidr_list
+  for_each          = toset(split(",",var.cidr_list))
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"

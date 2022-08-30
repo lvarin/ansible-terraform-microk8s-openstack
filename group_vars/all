@@ -1,3 +1,18 @@
+keypair: XXXX
+network: project_YYYY
+private_key_path: ~/.ssh/XXXX
+#
+instance_count: 2
+cidr_ssh: "0.0.0.0/0"
+cidr_list: "193.166.1.0/24,193.166.2.0/24, 193.166.80.0/23, 193.166.85.0/24"
+flavor: standard.medium
+nfs_volume_size: 50
+instance_master_name: "microk8s-master"
+instance_prefix: "microk8s-node"
+nfs_node_name: "microk8s-nfs"
+ssh_user: ubuntu
+control_port: 16443
+#
 microk8s_version: "1.24"
 microk8s_plugins:
   dns: true
@@ -7,4 +22,3 @@ microk8s_plugins:
   helm3: true
   dashboard: true
   ingress: true
-microk8s_user: ubuntu
