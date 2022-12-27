@@ -61,12 +61,30 @@ This will deploy the Virtual Machines and configure them. The cluster will be re
 1. Generate and copy a `config` file:
 
   ```sh
-  ssh ubuntu@<microk8s_master> microk8s.config >config
+  export MASTER_IP=<microk8s_master>
+  ssh ubuntu@$MASTER_IP microk8s.config >config
+  sed -i "s#\(server: https://\)[0-9\.]*:#\1$MASTER_IP:#" config
 ```
 
-**Note:** Replace `<microk8s_master>` with the master's floating ip.
+**Note:** Replace `<microk8s_master>` with the master's floating ip
 
 **Note 2:** In order to tell kubectl where is the config file simply do `kubectl --kubeconfig config`. Or copy it to the default path: `$HOME/.kube/config`.
+
+### Example application deployment
+
+We will deploy a minimal example, with an `Ingress`, `Service` and `Deployment`
+
+1. Edit `examples/ingress.yaml` and change `XXXX.kaj.pouta.csc.fi` for the DNS of the master's floating ip.
+
+1. Run kubectl create
+
+	```sh
+	kubectl --kubeconfig config create -f examples/deployment.yaml -f examples/service.yaml -f examples/ingress.yaml
+	```
+
+1. Visit `http://<microk8s_master>/` you should be greeted by:
+
+	`"Directory listing for /"`
 
 ## Un-deploy
 

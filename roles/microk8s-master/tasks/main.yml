@@ -45,14 +45,15 @@
     insertafter: IP.2
 
 - name: Resolving Dns
-  shell: nslookup {{ hostvars[inventory_hostname]["ansible_ssh_host"] }} | grep name
+  shell: getent hosts {{ hostvars[inventory_hostname]["ansible_ssh_host"] }} | awk '{print $2}'
   register: dns1
   changed_when: False
+
 - debug:
-    msg: "{{ dns1.stdout.split(' ')[2][:-1]}}"
+    msg: "{{ dns1.stdout }}"
 
 - name: Configuring DNS to csr.conf.template file
   lineinfile:
     path: /var/snap/microk8s/current/certs/csr.conf.template
-    line: DNS.6 = {{ dns1.stdout.split(' ')[2][:-1]}}
+    line: DNS.6 = {{ dns1.stdout }}
     insertafter: DNS.5

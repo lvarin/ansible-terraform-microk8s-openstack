@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-api
+spec:
+  selector:
+    matchLabels:
+      app: test-api
+  template:
+    metadata:
+      labels:
+        app: test-api
+    spec:
+      containers:
+      - name: test-api
+        image: lvarin/python-http-server
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http        

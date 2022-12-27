@@ -21,7 +21,7 @@
       marker: "# {mark} ANSIBLE MANAGED: microk8s HA Cluster Hosts"
       content: |
         {% for host in groups['all'] %}
-        {{ hostvars[host]['ansible_default_ipv4']['address'] }} {{ hostvars[host]['ansible_fqdn'] }} {{ hostvars[host]['ansible_hostname'] }}.novalocal
+        {{ hostvars[host]['ansible_default_ipv4']['address'] }} {{ hostvars[host]['ansible_fqdn'] }} {{ hostvars[host]['ansible_hostname'] }}
         {% endfor %}
   - name: Set authorized key taken from files
     authorized_key:
