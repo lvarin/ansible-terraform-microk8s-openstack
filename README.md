@@ -29,7 +29,6 @@ In order to configure this deployment the file `group_vars/all` must be used.
 |-:|:-|:-:|
 |**network**|this is the name of the network the Virtual Machines will be attached to. You can get the list with `openstack network list`.|-|
 |**keypair**|this is the name of the public ssh key stored in OpenStack that will be added to the Virtual Machines. You can get the list of keys installed in OpenStack with `openstack keypair list`. You must choose one key from that list.|-|
-|**private_key_path**|this is the path on you computer where Terraform will find the private key. This private key has to be the pair of the public key selected in _keypair_.|-|
 |**cidr_list**|list of CIDRs (an IP range) that will be able to access the cluster.|`193.166.1.0/24,193.166.2.0/24, 193.166.80.0/23, 193.166.85.0/24`|
 |**cidr_ssh**|list of CIDRs (an IP range) that will be able to SSH to the cluster nodes| `0.0.0.0/0` # Any IP|
 |**instance_count**|number of worker nodes.|0 # the master node will run the applications|

@@ -13,7 +13,7 @@ nfs_node_name: "microk8s-nfs"
 ssh_user: ubuntu
 control_port: 16443
 #
-microk8s_version: "1.24"
+microk8s_version: "1.31"
 microk8s_plugins:
   dns: true
   rbac: true

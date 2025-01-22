@@ -15,18 +15,14 @@
     cache_valid_time: 3600
     update_cache: yes
   when: ansible_distribution == 'Ubuntu'
+  changed_when: False
 
 - name: ensure python3 is installed
   become: yes
   ansible.builtin.package:
     name:
       - python3
-      - python3-pip
-    state: present
-
-- name: install kubernetes pip package
-  pip:
-    name: kubernetes
+      - python3-kubernetes
     state: present
 
 - name: Create .kube
@@ -42,18 +38,18 @@
   delegate_to: "{{groups['master'][0]}}"
 
 - name: Fetch the keyfile from one server to another
-  fetch: 
+  fetch:
     src: config
     dest: "buffer/config"
     flat: yes
   delegate_to: "{{groups['master'][0]}}"
 
-- name: Install Helm env plugin
-  kubernetes.core.helm_plugin:
-    plugin_path: "https://github.com/databus23/helm-diff"
-    state: present
-  delegate_to: "{{groups['master'][0]}}"
-
+    #- name: Install Helm env plugin
+    #  kubernetes.core.helm_plugin:
+    #    plugin_path: "https://github.com/databus23/helm-diff"
+    #    state: present
+    #  delegate_to: "{{groups['master'][0]}}"
+    #
 - name: Add stable chart repo
   kubernetes.core.helm_repository:
     name: csi-driver-nfs

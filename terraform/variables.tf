@@ -11,11 +11,6 @@ variable "network" {
   default = "" # default network to be used
 }
 
-variable "private_key_path" {
-  description = "Path to the private SSH key, used to access the instance."
-  default     = "" # path where terraform will find the private key
-}
-
 variable "cidr_list" {
   type    = string
   default = ""
@@ -60,7 +55,7 @@ variable "nfs_node_name" {
 }
 
 data "openstack_images_image_v2" "image" {
-  name        = "Ubuntu-20.04" # Name of image to be used
+  name        = "Ubuntu-24.04" # Name of image to be used
   most_recent = true
 }
 
